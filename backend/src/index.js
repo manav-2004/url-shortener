@@ -1,24 +1,22 @@
-import express from 'express'
+import { app } from './app.js';
+import { connectDb } from './db/index.js'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
-const app = express()
+connectDb()
+.then(()=>{
 
+    console.log('db connected successfully')
 
-app.get('/',(req, res)=>{
+    const port = process.env.PORT || port
 
-    const ip = req.headers['x-forwarded-for']?.split(',').shift()
-    || req.socket.remoteAddress
-
-    console.log(ip)
-
-    res.send(ip)
+    app.listen(port, ()=>{
+        console.log(`server started on port ${port}`)
+    })
 
 })
-
-const port = process.env.PORT || 8000
-
-app.listen(port, ()=>{
-    console.log('server started at port');
+.catch((err)=>{
+    console.log(err)
+    process.exit(1)
 })
